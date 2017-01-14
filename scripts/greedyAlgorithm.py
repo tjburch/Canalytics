@@ -5,6 +5,7 @@ class Player():
     def __init__(self, position, name, salary, points, value):
         self.self = self
         self.position = position
+        self.positionB = positionB
         self.name = name
         self.salary = salary
         self.points = points
@@ -25,15 +26,16 @@ with open('to_knapsackPosY.csv', 'r') as data:
     for row in reader:
         name = row[0]
         position = row[1]
-        salary = int(row[2])
-        points = float(row[3])
+        positionB = row[2]
+        salary = int(row[3])
+        points = float(row[4])
         value = points / salary
         player = Player(position, name, salary, points, value)
         players.append(player)
 
 
 def improved_knapsack(players):
-    budget = 73000000
+    budget = 66400000
     current_team_salary = 0
     constraints = {
         'RW': 3,
@@ -57,11 +59,17 @@ def improved_knapsack(players):
     for player in players:
         nam = player.name
         pos = player.position
+        posB = player.positionB
         sal = player.salary
         pts = player.points
-        if counts[pos] < constraints[pos] and current_team_salary + sal <= budget:
+        if counts[pos] < constraints[pos]  and current_team_salary + sal <= budget:
             team.append(player)
             counts[pos] = counts[pos] + 1
+            current_team_salary += sal
+            continue
+        elif counts[posB] < constraints[posB]  and current_team_salary + sal <= budget:
+            team.append(player)
+            counts[posB] = counts[posB] + 1
             current_team_salary += sal
             continue
         if counts['UTIL'] < constraints['UTIL'] and current_team_salary + sal <= budget and pos in ['LW', 'C', 'RW', 'D']:
@@ -88,10 +96,13 @@ def improved_knapsack(players):
 team = improved_knapsack(players)
 points = 0
 salary = 0
+output_file = csv.writer(open('result.csv','wb'))
 for player in team:
     points += player.points
     salary += player.salary
     print player
+    output_file.writerow([player.name, salary])
+
 print "\nPoints: {}".format(points)
 print "Salary: {}".format(salary)
 
