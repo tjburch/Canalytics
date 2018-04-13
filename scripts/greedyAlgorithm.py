@@ -42,7 +42,7 @@ def improved_knapsack(players):
         'C': 3,
         'LW': 3,
         'D': 6,
-        'UTIL': 3
+        'UTIL': 6
     }
 
     counts = {
@@ -56,6 +56,7 @@ def improved_knapsack(players):
     players.sort(key=lambda x: x.value, reverse=True)
     team = []
 
+    ### populates player list
     for player in players:
         nam = player.name
         pos = player.position
@@ -67,7 +68,7 @@ def improved_knapsack(players):
             counts[pos] = counts[pos] + 1
             current_team_salary += sal
             continue
-        elif counts[posB] < constraints[posB]  and current_team_salary + sal <= budget:
+        if counts[posB] < constraints[posB]  and current_team_salary + sal <= budget:
             team.append(player)
             counts[posB] = counts[posB] + 1
             current_team_salary += sal
@@ -77,14 +78,16 @@ def improved_knapsack(players):
             counts['UTIL'] = counts['UTIL'] + 1
             current_team_salary += sal
 
+    ## sorts player list, loops over players 
     players.sort(key=lambda x: x.points, reverse=True)
     for player in players:
         nam = player.name
         pos = player.position
+        posB = player.positionB
         sal = player.salary
         pts = player.points
         if player not in team:
-            pos_players = [x for x in team if x.position == pos]
+            pos_players = [x for x in team if x.position == pos or x.position == posB]
             pos_players.sort(key=lambda x: x.points)
             for pos_player in pos_players:
                 if (current_team_salary + sal - pos_player.salary) <= budget and pts > pos_player.points:
@@ -105,6 +108,3 @@ for player in team:
 
 print "\nPoints: {}".format(points)
 print "Salary: {}".format(salary)
-
-
-

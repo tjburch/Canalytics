@@ -68,9 +68,9 @@ dfCut.to_csv("../data/cut_stats_in_percent.csv")
 
 ########### Create Dataframe to be fed to Optimization ######
 
-d2 = {'name':names,'sum_percent':sum_percent,'salary':salary,'games':games}
+d2 = {'name':names,'position':positionX,'positionB':positionY,'salary':salary,'sum_percent':sum_percent,'games':games}
 df2 = pd.DataFrame( data=d2 )
 df2 = df2[df2.games > 15]
 df2.drop('games',axis=1)
-df2.to_csv("../data/to_knapsack.csv")
+df2.to_csv("to_knapsackPosY.csv",index=false)
                       
